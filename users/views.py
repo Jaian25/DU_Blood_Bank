@@ -32,11 +32,16 @@ class UsersAPI(GenericAPIView):
         if id is not None:
             stu = User.objects.get(id=id)
             serializer = UserSerializer(stu)
-            return Response({'data': serializer.data, 'success': True})
+            
+            dt = serializer.data
+            # del dt['password']
+            print(dt['password'])
+            dt['password'] = 00
+            return Response({'data': dt, 'success': True})
 
         stu = User.objects.all()
         serializer = UserSerializer(stu, many=True)
-        print(serializer.data)
+        # print(serializer.data)
         for user in serializer.data:
             # print(user['password'])
             #user['password']=0
