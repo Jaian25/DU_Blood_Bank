@@ -9,5 +9,5 @@ urlpatterns = [
     # path('agencies/', include('project.urls')),
     # path('components/', include('project.urls')),
     path('constraints/', include('constraint.urls')),
-    path('projects/', include('project.urls')),
+    # path('projects/', include('project.urls')),
 ]

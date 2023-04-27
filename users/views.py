@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.response import Response
-from .models import User, Review
-from .serializers import UserSerializer, ReviewSerializer
+from .models import User, Donations
+from .serializers import UserSerializer, DonationsSerializer
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
@@ -49,15 +49,21 @@ class UsersAPI(GenericAPIView):
         return Response({'data': serializer.data, 'success': True})
 
     def post(self, request, format=None):
+        # print("hereeeee")
+        # print(request.data)
         serializer = UserSerializer(data=request.data)
+        # print(serializer)
         if serializer.is_valid():
             serializer.save()
             return Response({'msg': 'Data Created','success': True}, status=status.HTTP_201_CREATED)
+        else:
+            print("invalidddddddddddd")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def patch(self, request, pk, format=None):
         id = pk
         stu = User.objects.get(pk=id)
+        print('id')
         serializer = UserSerializer(stu, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -73,7 +79,7 @@ class UsersAPI(GenericAPIView):
 
 
 
-class ReviewAPI(APIView):
+class DonationsAPI(APIView):
 
     permission_classes = (permissions.IsAuthenticated,)
     authentication_classes = [TokenAuthentication, ]
@@ -81,17 +87,18 @@ class ReviewAPI(APIView):
     def get(self, request, pk=None, format=None):
         id = pk
         if id is not None:
-            review = ReviewSerializer.objects.get(id=id)
-            serializer = ReviewSerializer(review)
+            donation = DonationsSerializer.objects.get(id=id)
+            serializer = DonationsSerializer(donation)
             return Response({'data': serializer.data, 'success': True})
-        review = Review.objects.all()            
-        serializer = ReviewSerializer(review, many=True)
+        review = Donations.objects.all()            
+        serializer = DonationsSerializer(review, many=True)
         return Response({'data': serializer.data, 'success': True})
 
     def post(self, request, format=None):
-        print(request.data['project_id'])
-        review_data = {'user_id': request.user.id, 'project_id': request.data['project_id'], 'review': request.data['review'], 'rating': request.data['rating']}
-        serializer = ReviewSerializer(data=review_data)
+       
+        review_data = {'user_id': request.user.id,  'review': request.data['review'], 'date': request.data['date']}
+        print(review_data)
+        serializer = DonationsSerializer(data=review_data)
         if serializer.is_valid():
             obj = serializer.save()                
             return Response({'msg': 'Data Created','success': True}, status=status.HTTP_201_CREATED)
@@ -100,8 +107,8 @@ class ReviewAPI(APIView):
 
     def patch(self, request, pk, format=None):
         id = pk
-        data = Review.objects.get(pk=id)
-        serializer = ReviewSerializer(data, data=request.data, partial=True)
+        data = Donations.objects.get(pk=id)
+        serializer = DonationsSerializer(data, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response({'msg': 'Partial Data Updated'})
