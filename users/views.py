@@ -18,7 +18,17 @@ class CurrentUserAPI(APIView):
         user = request.user
         serializer = UserSerializer(user)
         return Response({'data': serializer.data, 'success': True})
-
+    
+class UsersUtilAPI(GenericAPIView):
+    def get(self, request):
+        # print(request.query_params)
+        dt = dict(request.query_params )
+        print(dt)
+        stu = User.objects.all()
+        
+        stu = User.objects.filter(area__in = dt['area'])
+        serializer = UserSerializer(stu, many=True)
+        return Response({'data': serializer.data, 'success': True})
 
 class UsersAPI(GenericAPIView):
     

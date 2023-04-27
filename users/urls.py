@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import UsersAPI, CurrentUserAPI,DonationsAPI
+from .views import UsersAPI, CurrentUserAPI,DonationsAPI, UsersUtilAPI
 
 urlpatterns = [
     path('', UsersAPI.as_view()),
@@ -7,5 +7,6 @@ urlpatterns = [
     path('<int:pk>/', UsersAPI.as_view()),
     path('donations/', DonationsAPI.as_view()),
     path('donations/<int:pk>/', DonationsAPI.as_view()),
+    path('search/', UsersUtilAPI.as_view()),
     
 ]
