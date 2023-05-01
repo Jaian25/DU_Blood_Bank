@@ -60,15 +60,30 @@ class UsersAPI(GenericAPIView):
 
     def post(self, request, format=None):
         # print("hereeeee")
-        # print(request.data)
+        if 'last_donated' in request.data.keys():
+            try:
+                ddmmyy = str(request.data['last_donated']).split('-')
+                dd, mm ,yy = ddmmyy[0] , ddmmyy[1], ddmmyy[2]  
+                yymmdd = f'{yy}-{mm}-{dd}'
+                request.data['last_donated'] = yymmdd
+            except:
+                request.data['last_donated'] = None
         serializer = UserSerializer(data=request.data)
         # print(serializer)
         if serializer.is_valid():
             serializer.save()
             return Response({'msg': 'Data Created','success': True}, status=status.HTTP_201_CREATED)
         else:
-            print("invalidddddddddddd")
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+           
+            ers = {}
+            for keys in serializer.errors.keys():
+                val = ''
+                for i in range(len(serializer.errors[keys])):
+                    val = f'{val}{serializer.errors[keys][i]}'
+                ers[keys] = val
+
+
+        return Response(ers, status=status.HTTP_400_BAD_REQUEST)
 
     def patch(self, request, pk, format=None):
         id = pk

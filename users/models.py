@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.utils import timezone
 import datetime
+
 # from project.models import Agency, Project
 
 from .managers import UserManager
@@ -14,7 +15,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     blood_type = models.CharField(max_length=64, null=True, blank=True)
     area = models.CharField(max_length=64, null=True, blank=True)
     # is_active = models.BooleanField(default=True)
-    last_donated = models.DateField(default=datetime.date(1997, 10, 19), null=True)
+    last_donated = models.DateField(default=datetime.date(1997, 10, 19), null=True  )
     number_of_donations =  models.DecimalField(default= 0, decimal_places=0 , max_digits=20)
     phone = models.CharField(max_length=64,null=True, unique=True)
     
