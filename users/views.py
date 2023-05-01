@@ -62,7 +62,7 @@ class UsersAPI(GenericAPIView):
         # print("hereeeee")
         if 'last_donated' in request.data.keys():
             try:
-                ddmmyy = str(request.data['last_donated']).split('-')
+                ddmmyy = str(request.data['last_donated']).split('/')
                 dd, mm ,yy = ddmmyy[0] , ddmmyy[1], ddmmyy[2]  
                 yymmdd = f'{yy}-{mm}-{dd}'
                 request.data['last_donated'] = yymmdd
