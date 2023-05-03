@@ -18,6 +18,18 @@ class CurrentUserAPI(APIView):
         user = request.user
         serializer = UserSerializer(user)
         return Response({'data': serializer.data, 'success': True})
+    def patch(self, request, pk=None, format=None):
+        print(request.user.id)
+
+        user = request.user
+        stu = User.objects.get(pk=user.id)
+        print(user.id)
+        serializer = UserSerializer(stu, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'msg': 'Partial Data Updated'})
+        return Response(serializer.errors)
+
     
 class UsersUtilAPI(GenericAPIView):
     def get(self, request):
@@ -86,6 +98,9 @@ class UsersAPI(GenericAPIView):
         return Response(ers, status=status.HTTP_400_BAD_REQUEST)
 
     def patch(self, request, pk, format=None):
+        permission_classes = (permissions.IsAuthenticated,)
+        authentication_classes = [TokenAuthentication, ]
+        print(request.user.id)
         id = pk
         stu = User.objects.get(pk=id)
         print('id')
