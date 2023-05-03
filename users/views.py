@@ -72,14 +72,16 @@ class UsersAPI(GenericAPIView):
 
     def post(self, request, format=None):
         # print("hereeeee")
-        if 'last_donated' in request.data.keys():
+        print(request.data.keys())
+        if ('day' in request.data.keys()) and ('month' in request.data.keys()) and ('year' in request.data.keys()):
             try:
-                ddmmyy = str(request.data['last_donated']).split('/')
-                dd, mm ,yy = ddmmyy[0] , ddmmyy[1], ddmmyy[2]  
-                yymmdd = f'{yy}-{mm}-{dd}'
+                
+                yymmdd = f"{request.data['year']}-{request.data['month']}-{request.data['day']}"
                 request.data['last_donated'] = yymmdd
             except:
                 request.data['last_donated'] = None
+        else:
+            request.data['last_donated'] = None
         serializer = UserSerializer(data=request.data)
         # print(serializer)
         if serializer.is_valid():
