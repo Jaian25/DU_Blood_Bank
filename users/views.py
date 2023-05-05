@@ -24,11 +24,31 @@ class CurrentUserAPI(APIView):
         user = request.user
         stu = User.objects.get(pk=user.id)
         print(user.id)
+
+        if 'oldPassword' in request.data.keys():
+            oldPass = request.data['oldPassword']
+            newPassword = request.data['newPassword']
+            try:
+                if stu.check_password(oldPass):
+                    stu.set_password(newPassword)
+                    return Response({'msg': 'Password Updated'})
+                else:
+                    return Response({"oldPassword": "Wrong Password"}, status=status.HTTP_400_BAD_REQUEST)
+            except:
+                return Response({"status": "Password can not be updated"}, status=status.HTTP_400_BAD_REQUEST)
         serializer = UserSerializer(stu, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response({'msg': 'Partial Data Updated'})
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        ers = {}
+        for keys in serializer.errors.keys():
+            val = ''
+            for i in range(len(serializer.errors[keys])):
+                val = f'{val}{serializer.errors[keys][i]}'
+            ers[keys] = val
+
+        return Response(ers, status=status.HTTP_400_BAD_REQUEST)
 
     
 class UsersUtilAPI(GenericAPIView):
