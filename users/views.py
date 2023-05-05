@@ -28,7 +28,7 @@ class CurrentUserAPI(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response({'msg': 'Partial Data Updated'})
-        return Response(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     
 class UsersUtilAPI(GenericAPIView):
