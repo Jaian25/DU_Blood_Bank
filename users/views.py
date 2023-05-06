@@ -31,11 +31,23 @@ class CurrentUserAPI(APIView):
             try:
                 if stu.check_password(oldPass):
                     stu.set_password(newPassword)
+                    stu.save()
                     return Response({'msg': 'Password Updated'})
                 else:
                     return Response({"oldPassword": "Wrong Password"}, status=status.HTTP_400_BAD_REQUEST)
             except:
                 return Response({"status": "Password can not be updated"}, status=status.HTTP_400_BAD_REQUEST)
+        if ('day' in request.data.keys()) and ('month' in request.data.keys()) and ('year' in request.data.keys()):
+            try:
+                
+                yymmdd = f"{request.data['year']}-{request.data['month']}-{request.data['day']}"
+                request.data['last_donated'] = yymmdd
+                del request.data['year']
+                del request.data['month']
+                del request.data['day']
+            except:
+                pass
+        
         serializer = UserSerializer(stu, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
